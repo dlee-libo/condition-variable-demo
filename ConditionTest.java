@@ -26,14 +26,13 @@ public class ConditionTest {
             public void run() {
                 while (true) {
                     synchronized (lock) {
-                        if (!shouldPrint) {
+                        while (!shouldPrint) {
                             try {
                                 lock.wait();
                             } catch (InterruptedException e) {
-
+                                e.printStackTrace();
                             }
                         }
-
                         System.out.println(x);
                         break;
                     }
