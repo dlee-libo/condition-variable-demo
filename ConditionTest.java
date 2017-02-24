@@ -19,13 +19,17 @@ public class ConditionTest {
     }
 
     public void demo() {
+        final Object lock = new Object();
+
         Thread t2 = new Thread(new Runnable() {
             @Override
             public void run() {
                 while (true) {
-                    if (shouldPrint) {
-                        System.out.println(x);
-                        break;
+                    synchronized (lock) {
+                        if (shouldPrint) {
+                            System.out.println(x);
+                            break;
+                        }
                     }
                 }
             }
@@ -44,7 +48,9 @@ public class ConditionTest {
                     System.out.println("generate n:" + n);
                     x += n;
                     if (x > max) {
-                        shouldPrint = true;
+                        synchronized (lock) {
+                            shouldPrint = true;
+                        }
                         break;
                     } else {
                         try {
