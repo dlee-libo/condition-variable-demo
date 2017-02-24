@@ -26,14 +26,16 @@ public class ConditionTest {
             public void run() {
                 while (true) {
                     synchronized (lock) {
-                        if (shouldPrint) {
-                            System.out.println(x);
-                            break;
+                        if (!shouldPrint) {
+                            try {
+                                lock.wait();
+                            } catch (InterruptedException e) {
+
+                            }
                         }
-                    }
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
+
+                        System.out.println(x);
+                        break;
                     }
                 }
             }
@@ -54,6 +56,7 @@ public class ConditionTest {
                     if (x > max) {
                         synchronized (lock) {
                             shouldPrint = true;
+                            lock.notify();
                         }
                         break;
                     } else {
